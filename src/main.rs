@@ -7,6 +7,7 @@ mod constants;
 mod middleware;
 mod models;
 mod routes;
+mod services;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -33,6 +34,10 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::new("%a %{User-Agent}i %r %s %b %T")) // Single, more detailed logger
             .service(web::scope("/api").configure(|r| {
                 r.route("/test", web::post().to(routes::test::test_route));
+                r.route(
+                    "/google-cloud-auth",
+                    web::get().to(routes::test::test_google_auth_route),
+                );
             }))
     })
     .bind(("0.0.0.0", port))?
